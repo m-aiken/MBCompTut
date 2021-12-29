@@ -22,6 +22,21 @@ MBCompTutorialAudioProcessor::MBCompTutorialAudioProcessor()
                        )
 #endif
 {
+    // apvts's getParameter function returns a RangedAudioParameter pointer
+    // cast that to the correct type ie. AudioParameterFloat pointer
+    // getParameter returns null if the provided parameter ID (string) is not found
+    // jassert as safety check - will also catch if cast fails
+    threshold = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Threshold"));
+    jassert(threshold != nullptr);
+    
+    attack = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Attack"));
+    jassert(attack != nullptr);
+    
+    release = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Release"));
+    jassert(release != nullptr);
+    
+    ratio = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("Ratio"));
+    jassert(ratio != nullptr);
 }
 
 MBCompTutorialAudioProcessor::~MBCompTutorialAudioProcessor()
@@ -150,6 +165,11 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    compressor.setThreshold(threshold->get());
+    compressor.setAttack(attack->get());
+    compressor.setRelease(release->get());
+    compressor.setRatio(ratio->getCurrentChoiceName().getFloatValue());
 
     auto block = juce::dsp::AudioBlock<float>(buffer);
     auto context = juce::dsp::ProcessContextReplacing<float>(block);

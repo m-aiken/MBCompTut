@@ -58,6 +58,8 @@ public:
     
     APVTS apvts { *this, nullptr, "Parameters", createParameterLayout() };
 private:
+    juce::dsp::Compressor<float> compressor;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MBCompTutorialAudioProcessor)
 };

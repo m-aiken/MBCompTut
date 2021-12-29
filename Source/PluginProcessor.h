@@ -60,10 +60,12 @@ public:
 private:
     juce::dsp::Compressor<float> compressor;
     
+    // cached ptrs for audio params
     juce::AudioParameterFloat* threshold { nullptr };
     juce::AudioParameterFloat* attack { nullptr };
     juce::AudioParameterFloat* release { nullptr };
     juce::AudioParameterChoice* ratio { nullptr };
+    juce::AudioParameterBool* bypass { nullptr };
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MBCompTutorialAudioProcessor)

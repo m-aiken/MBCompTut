@@ -37,6 +37,9 @@ MBCompTutorialAudioProcessor::MBCompTutorialAudioProcessor()
     
     ratio = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("Ratio"));
     jassert(ratio != nullptr);
+    
+    bypass = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("Bypass"));
+    jassert(bypass != nullptr);
 }
 
 MBCompTutorialAudioProcessor::~MBCompTutorialAudioProcessor()
@@ -174,6 +177,9 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto block = juce::dsp::AudioBlock<float>(buffer);
     auto context = juce::dsp::ProcessContextReplacing<float>(block);
     
+    // toggle bypass (bool) on the processing context
+    context.isBypassed = bypass->get();
+    
     compressor.process(context);
 }
 
@@ -231,6 +237,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout MBCompTutorialAudioProcessor
     }
     
     layout.add(std::make_unique<juce::AudioParameterChoice>("Ratio", "Ratio", ratioChoices, 3));
+    
+    layout.add(std::make_unique<juce::AudioParameterBool>("Bypass", "Bypass", false));
     
     return layout;
 }

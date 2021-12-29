@@ -26,20 +26,20 @@ MBCompTutorialAudioProcessor::MBCompTutorialAudioProcessor()
     // cast that to the correct type ie. AudioParameterFloat pointer
     // getParameter returns null if the provided parameter ID (string) is not found
     // jassert as safety check - will also catch if cast fails
-    threshold = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Threshold"));
-    jassert(threshold != nullptr);
+    compressor.threshold = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Threshold"));
+    jassert(compressor.threshold != nullptr);
     
-    attack = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Attack"));
-    jassert(attack != nullptr);
+    compressor.attack = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Attack"));
+    jassert(compressor.attack != nullptr);
     
-    release = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Release"));
-    jassert(release != nullptr);
+    compressor.release = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("Release"));
+    jassert(compressor.release != nullptr);
     
-    ratio = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("Ratio"));
-    jassert(ratio != nullptr);
+    compressor.ratio = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("Ratio"));
+    jassert(compressor.ratio != nullptr);
     
-    bypass = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("Bypass"));
-    jassert(bypass != nullptr);
+    compressor.bypass = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("Bypass"));
+    jassert(compressor.bypass != nullptr);
 }
 
 MBCompTutorialAudioProcessor::~MBCompTutorialAudioProcessor()
@@ -169,18 +169,9 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    compressor.setThreshold(threshold->get());
-    compressor.setAttack(attack->get());
-    compressor.setRelease(release->get());
-    compressor.setRatio(ratio->getCurrentChoiceName().getFloatValue());
+    compressor.updateCompressorSettings();
 
-    auto block = juce::dsp::AudioBlock<float>(buffer);
-    auto context = juce::dsp::ProcessContextReplacing<float>(block);
-    
-    // toggle bypass (bool) on the processing context
-    context.isBypassed = bypass->get();
-    
-    compressor.process(context);
+    compressor.process(buffer);
 }
 
 //==============================================================================

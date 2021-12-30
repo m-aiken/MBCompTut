@@ -55,6 +55,10 @@ MBCompTutorialAudioProcessor::MBCompTutorialAudioProcessor()
     
     LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     HP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
+    
+    // allpass test
+    AP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
+    // end allpass test
 }
 
 MBCompTutorialAudioProcessor::~MBCompTutorialAudioProcessor()
@@ -139,6 +143,11 @@ void MBCompTutorialAudioProcessor::prepareToPlay (double sampleRate, int samples
     LP.prepare(spec);
     HP.prepare(spec);
     
+    // allpass test
+    AP.prepare(spec);
+    apBuffer.setSize(spec.numChannels, spec.maximumBlockSize);
+    // end allpass test
+    
     for ( auto& buffer : filterBuffers )
     {
         buffer.setSize(spec.numChannels, spec.maximumBlockSize);
@@ -216,6 +225,14 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto numSamples = buffer.getNumSamples();
     auto numChannels = buffer.getNumChannels();
     
+    // allpass tests
+    AP.setCutoffFrequency(cutoff);
+    apBuffer = buffer;
+    auto apBlock = juce::dsp::AudioBlock<float>(apBuffer);
+    auto apContext = juce::dsp::ProcessContextReplacing<float>(apBlock);
+    AP.process(apContext);
+    // end allpass tests
+        
     buffer.clear();
     
     auto addFilterBand = [nc = numChannels, ns = numSamples](auto& inputBuffer, const auto& source)
@@ -228,6 +245,18 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     
     addFilterBand(buffer, filterBuffers[0]);
     addFilterBand(buffer, filterBuffers[1]);
+    
+    // allpass tests
+    if ( compressor.bypass->get() )
+    {
+        for ( auto ch = 0; ch < numChannels; ++ch )
+        {
+            juce::FloatVectorOperations::multiply(apBuffer.getWritePointer(ch), -1.f, numSamples);
+        }
+        
+        addFilterBand(buffer, apBuffer);
+    }
+    // end allpass test
 }
 
 //==============================================================================

@@ -160,6 +160,11 @@ private:
     
     std::array<juce::AudioBuffer<float>, 2> filterBuffers;
     
+    // allpass tests
+    Filter AP;
+    juce::AudioBuffer<float> apBuffer;
+    // end allpass tests
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MBCompTutorialAudioProcessor)
 };

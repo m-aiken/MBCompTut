@@ -204,6 +204,9 @@ private:
     
     void splitBands(const juce::AudioBuffer<float>& inputBuffer);
     
+    static void addFloatParam(APVTS::ParameterLayout& layout, const juce::String& name, const juce::NormalisableRange<float>& range, const float defaultVal);
+    static void addBoolParam(APVTS::ParameterLayout& layout, const juce::String& name, const bool defaultVal);
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MBCompTutorialAudioProcessor)
 };

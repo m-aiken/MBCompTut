@@ -73,6 +73,9 @@ MBCompTutorialAudioProcessor::MBCompTutorialAudioProcessor()
     floatHelper(lowMidCrossover, Params::Names::Low_Mid_Crossover_Freq);
     floatHelper(midHighCrossover, Params::Names::Mid_High_Crossover_Freq);
     
+    floatHelper(inputGainParam, Params::Names::Gain_In);
+    floatHelper(outputGainParam, Params::Names::Gain_Out);
+    
     LP1.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     HP1.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
     AP2.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
@@ -166,6 +169,12 @@ void MBCompTutorialAudioProcessor::prepareToPlay (double sampleRate, int samples
     LP2.prepare(spec);
     HP2.prepare(spec);
     
+    inputGain.prepare(spec);
+    outputGain.prepare(spec);
+    
+    inputGain.setRampDurationSeconds(0.05);
+    outputGain.setRampDurationSeconds(0.05);
+    
     for ( auto& buffer : filterBuffers )
         buffer.setSize(spec.numChannels, spec.maximumBlockSize);
 }
@@ -219,6 +228,11 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
    
     for ( auto& compressor : compressors)
         compressor.updateCompressorSettings();
+    
+    inputGain.setGainDecibels(inputGainParam->get());
+    outputGain.setGainDecibels(outputGainParam->get());
+    
+    applyGain(buffer, inputGain);
         
     for ( auto& fb : filterBuffers )
         fb = buffer;
@@ -295,6 +309,8 @@ void MBCompTutorialAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             }
         }
     }
+    
+    applyGain(buffer, outputGain);
 }
 
 //==============================================================================
@@ -329,6 +345,16 @@ juce::AudioProcessorValueTreeState::ParameterLayout MBCompTutorialAudioProcessor
 {
     APVTS::ParameterLayout layout;
     const auto& params = Params::getParams();
+    
+    auto gainRange = juce::NormalisableRange<float>(-24.f, 24.f, 0.5f, 1.f);
+    layout.add(std::make_unique<juce::AudioParameterFloat>(params.at(Params::Names::Gain_In),
+                                                           params.at(Params::Names::Gain_In),
+                                                           gainRange,
+                                                           0.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(params.at(Params::Names::Gain_Out),
+                                                           params.at(Params::Names::Gain_Out),
+                                                           gainRange,
+                                                           0.f));
     
     layout.add(std::make_unique<juce::AudioParameterFloat>(params.at(Params::Names::Threshold_Low_Band),
                                                            params.at(Params::Names::Threshold_Low_Band),

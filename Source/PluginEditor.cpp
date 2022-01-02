@@ -17,11 +17,11 @@ MBCompTutorialAudioProcessorEditor::MBCompTutorialAudioProcessorEditor (MBCompTu
       crossoverLowMid_Attachment(audioProcessor.apvts, "Low-Mid Crossover Frequency", crossoverLowMid),
       crossoverMidHigh_Attachment(audioProcessor.apvts, "Mid-High Crossover Frequency", crossoverMidHigh)
 {
-    addRotary(crossoverLowMid, crossoverLowMid_Label, "Low-Mid Crossover");
-    addRotary(crossoverMidHigh, crossoverMidHigh_Label, "Mid-High Crossover");
+    addSlider(crossoverLowMid, crossoverLowMid_Label, "Low-Mid X-Over");
+    addSlider(crossoverMidHigh, crossoverMidHigh_Label, "Mid-High X-Over");
     
-    addRotary(gainInput, gainInput_Label, "Gain In");
-    addRotary(gainOutput, gainOutput_Label, "Gain Out");
+    addSlider(gainInput, gainInput_Label, "Gain In");
+    addSlider(gainOutput, gainOutput_Label, "Gain Out");
     
     addAndMakeVisible(lowBand);
     addAndMakeVisible(midBand);
@@ -78,10 +78,10 @@ void MBCompTutorialAudioProcessorEditor::resized()
     xOverIO.performLayout(rightStrip);
 }
 
-void MBCompTutorialAudioProcessorEditor::addRotary(juce::Slider& slider, juce::Label& label, const juce::String& labelText)
+void MBCompTutorialAudioProcessorEditor::addSlider(juce::Slider& slider, juce::Label& label, const juce::String& labelText)
 {
     addAndMakeVisible(slider);
-    slider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
+    slider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
     slider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     
     addAndMakeVisible(label);

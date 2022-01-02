@@ -126,7 +126,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     
-    void addRotary(juce::Slider& slider, juce::Label& label, const juce::String& labelText);
+    void addSlider(juce::Slider& slider, juce::Label& label, const juce::String& labelText);
 
 private:
     // This reference is provided as a quick way for your editor to

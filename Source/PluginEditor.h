@@ -60,7 +60,17 @@ struct Band : juce::Component
     // light grey = juce::Colour(48u, 54u, 61u);
     void paint(juce::Graphics& g) override
     {
-        g.fillAll(juce::Colour(13u, 17u, 23u));
+        auto bounds = getLocalBounds();
+        
+        auto grey = juce::Colour(48u, 54u, 61u);
+        auto navy = juce::Colour(13u, 17u, 23u);
+        
+        g.setColour(grey); // grey for border
+        g.fillAll();
+        
+        bounds.reduce(3, 2);
+        g.setColour(navy); // navy for fill
+        g.fillRoundedRectangle(bounds.toFloat(), 3);
     }
     
     void resized() override

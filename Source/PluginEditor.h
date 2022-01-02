@@ -72,10 +72,11 @@ struct Band : juce::Component
         auto aRotary = juce::GridItem(attackRotary);
         auto rRotary = juce::GridItem(releaseRotary);
         
-        int mrg = 20;
-        tRotary.margin = mrg;
-        aRotary.margin = mrg;
-        rRotary.margin = mrg;
+        // margin args = top, right, bottom, left
+        auto rotaryMargin = juce::GridItem::Margin(30.f, 0.f, 10.f, 0.f);
+        tRotary.margin = rotaryMargin;
+        aRotary.margin = rotaryMargin;
+        rRotary.margin = rotaryMargin;
         
         rotaries.items = { juce::GridItem(tRotary), juce::GridItem(aRotary), juce::GridItem(rRotary) };
         rotaries.performLayout(bounds);

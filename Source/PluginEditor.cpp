@@ -78,46 +78,6 @@ void MBCompTutorialAudioProcessorEditor::resized()
     xOverIO.performLayout(rightStrip);
 }
 
-juce::Grid MBCompTutorialAudioProcessorEditor::buildBand(juce::Slider& threshold, juce::Slider& attack, juce::Slider& release)
-{
-    using Track = juce::Grid::TrackInfo;
-    using Fr = juce::Grid::Fr;
-    
-    juce::Grid band;
-    band.templateRows = { Track(Fr (1)) };
-    band.templateColumns = { Track(Fr (1)), Track(Fr (1)), Track(Fr (1)) };
-    
-    auto t = juce::GridItem(threshold);
-    auto a = juce::GridItem(attack);
-    auto r = juce::GridItem(release);
-    
-    int mrg = 20;
-    t.margin = mrg;
-    a.margin = mrg;
-    r.margin = mrg;
-    
-    band.items = { juce::GridItem(t), juce::GridItem(a), juce::GridItem(r) };
-    return band;
-}
-
-juce::Grid MBCompTutorialAudioProcessorEditor::buildToggles(juce::ToggleButton& bypass, juce::ToggleButton& mute, juce::ToggleButton& solo)
-{
-    using Track = juce::Grid::TrackInfo;
-    using Fr = juce::Grid::Fr;
-
-    juce::Grid toggles;
-    toggles.templateRows = { Track(Fr (1)), Track(Fr (1)), Track(Fr (1)) };
-    toggles.templateColumns = { Track(Fr (1)) };
-    
-    toggles.items = {
-        juce::GridItem(bypass),
-        juce::GridItem(mute),
-        juce::GridItem(solo)
-    };
-    
-    return toggles;
-}
-
 void MBCompTutorialAudioProcessorEditor::addRotary(juce::Slider& slider, juce::Label& label, const juce::String& labelText)
 {
     addAndMakeVisible(slider);

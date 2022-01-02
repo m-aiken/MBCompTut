@@ -126,9 +126,6 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     
-    juce::Grid buildBand(juce::Slider& threshold, juce::Slider& attack, juce::Slider& release);
-    juce::Grid buildToggles(juce::ToggleButton& bypass, juce::ToggleButton& mute, juce::ToggleButton& solo);
-    
     void addRotary(juce::Slider& slider, juce::Label& label, const juce::String& labelText);
 
 private:

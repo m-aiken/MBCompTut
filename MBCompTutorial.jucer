@@ -4,6 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" cppLanguageStandard="17">
   <MAINGROUP id="jaz9OG" name="MBCompTutorial">
     <GROUP id="{5A336D54-FCAF-E33A-1632-F5128A4A068E}" name="Source">
+      <FILE id="MuRIvd" name="Band.h" compile="0" resource="0" file="Source/Band.h"/>
       <FILE id="Bjnh4X" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="fJ13c3" name="PluginProcessor.h" compile="0" resource="0"

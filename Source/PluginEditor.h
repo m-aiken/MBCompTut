@@ -13,17 +13,9 @@
 
 struct Band : juce::Component
 {
-    juce::Slider thresholdRotary{ juce::Slider::SliderStyle::Rotary, juce::Slider::TextEntryBoxPosition::TextBoxBelow },
-                 attackRotary{ juce::Slider::SliderStyle::Rotary, juce::Slider::TextEntryBoxPosition::TextBoxBelow },
-                 releaseRotary{ juce::Slider::SliderStyle::Rotary, juce::Slider::TextEntryBoxPosition::TextBoxBelow };
-    
-    juce::Label thresholdLabel{ "Threshold", "Threshold" },
-                attackLabel{ "Attack", "Attack" },
-                releaseLabel{ "Release", "Release" };
-    
-    juce::ToggleButton bypassButton{ "X" },
-                       muteButton{ "M" },
-                       soloButton{ "S" };
+    juce::Slider thresholdRotary, attackRotary, releaseRotary;
+    juce::Label thresholdLabel, attackLabel, releaseLabel;
+    juce::ToggleButton bypassButton{ "X" }, muteButton{ "M" }, soloButton{ "S" };
     
     using sliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     sliderAttachment thresholdAttachment, attackAttachment, releaseAttachment;
@@ -39,25 +31,15 @@ struct Band : juce::Component
         muteAttachment(p.apvts, ("Mute " + bandName + " Band"), muteButton),
         soloAttachment(p.apvts, ("Solo " + bandName + " Band"), soloButton)
     {
-        addAndMakeVisible(thresholdRotary);
-        addAndMakeVisible(attackRotary);
-        addAndMakeVisible(releaseRotary);
-        
-        addAndMakeVisible(thresholdLabel);
-        addAndMakeVisible(attackLabel);
-        addAndMakeVisible(releaseLabel);
-        
-        thresholdLabel.setJustificationType(juce::Justification::centred);
-        attackLabel.setJustificationType(juce::Justification::centred);
-        releaseLabel.setJustificationType(juce::Justification::centred);
+        addRotary(thresholdRotary, thresholdLabel, "Threshold");
+        addRotary(attackRotary, attackLabel, "Attack");
+        addRotary(releaseRotary, releaseLabel, "Release");
         
         addAndMakeVisible(bypassButton);
         addAndMakeVisible(muteButton);
         addAndMakeVisible(soloButton);
     }
     
-    // dark blue = juce::Colour(13u, 17u, 23u);
-    // light grey = juce::Colour(48u, 54u, 61u);
     void paint(juce::Graphics& g) override
     {
         auto bounds = getLocalBounds();
@@ -77,34 +59,25 @@ struct Band : juce::Component
     {
         auto bounds = getLocalBounds();
         auto toggleContainer = bounds.removeFromRight(50);
-        auto labelContainer = bounds.removeFromTop(10);
         
         using Track = juce::Grid::TrackInfo;
         using Fr = juce::Grid::Fr;
-        
-        // Labels
-        juce::Grid labels;
-        labels.templateRows = { Track(Fr (1)) };
-        labels.templateColumns = { Track(Fr (1)), Track(Fr (1)), Track(Fr (1)) };
-        
-        labels.items = { juce::GridItem(thresholdLabel), juce::GridItem(attackLabel), juce::GridItem(releaseLabel) };
-        labels.performLayout(labelContainer);
         
         // Rotaries - Threshold / Attack / Release
         juce::Grid rotaries;
         rotaries.templateRows = { Track(Fr (1)) };
         rotaries.templateColumns = { Track(Fr (1)), Track(Fr (1)), Track(Fr (1)) };
         
-        auto t = juce::GridItem(thresholdRotary);
-        auto a = juce::GridItem(attackRotary);
-        auto r = juce::GridItem(releaseRotary);
+        auto tRotary = juce::GridItem(thresholdRotary);
+        auto aRotary = juce::GridItem(attackRotary);
+        auto rRotary = juce::GridItem(releaseRotary);
         
         int mrg = 20;
-        t.margin = mrg;
-        a.margin = mrg;
-        r.margin = mrg;
+        tRotary.margin = mrg;
+        aRotary.margin = mrg;
+        rRotary.margin = mrg;
         
-        rotaries.items = { juce::GridItem(t), juce::GridItem(a), juce::GridItem(r) };
+        rotaries.items = { juce::GridItem(tRotary), juce::GridItem(aRotary), juce::GridItem(rRotary) };
         rotaries.performLayout(bounds);
         
         // Toggle buttons
@@ -119,6 +92,18 @@ struct Band : juce::Component
         };
         
         toggles.performLayout(toggleContainer);
+    }
+    
+    void addRotary(juce::Slider& slider, juce::Label& label, const juce::String& labelText)
+    {
+        addAndMakeVisible(slider);
+        slider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
+        slider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+        
+        addAndMakeVisible(label);
+        label.setText(labelText, juce::dontSendNotification);
+        label.setJustificationType(juce::Justification::centred);
+        label.attachToComponent(&slider, false);
     }
 };
 

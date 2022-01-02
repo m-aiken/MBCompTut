@@ -15,6 +15,7 @@ struct Band : juce::Component
 {
     juce::Slider thresholdRotary, attackRotary, releaseRotary;
     juce::Label thresholdLabel, attackLabel, releaseLabel;
+    juce::Label bandLabel;
     juce::ToggleButton bypassButton{ "X" }, muteButton{ "M" }, soloButton{ "S" };
     
     using sliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
@@ -38,6 +39,10 @@ struct Band : juce::Component
         addAndMakeVisible(bypassButton);
         addAndMakeVisible(muteButton);
         addAndMakeVisible(soloButton);
+        
+        addAndMakeVisible(bandLabel);
+        bandLabel.setText(bandName, juce::dontSendNotification);
+        bandLabel.setJustificationType(juce::Justification::centred);
     }
     
     void paint(juce::Graphics& g) override
@@ -66,7 +71,7 @@ struct Band : juce::Component
         // Rotaries - Threshold / Attack / Release
         juce::Grid rotaries;
         rotaries.templateRows = { Track(Fr (1)) };
-        rotaries.templateColumns = { Track(Fr (1)), Track(Fr (1)), Track(Fr (1)) };
+        rotaries.templateColumns = { Track(Fr (3)), Track(Fr (5)), Track(Fr (5)), Track(Fr (5)) };
         
         auto tRotary = juce::GridItem(thresholdRotary);
         auto aRotary = juce::GridItem(attackRotary);
@@ -78,7 +83,7 @@ struct Band : juce::Component
         aRotary.margin = rotaryMargin;
         rRotary.margin = rotaryMargin;
         
-        rotaries.items = { juce::GridItem(tRotary), juce::GridItem(aRotary), juce::GridItem(rRotary) };
+        rotaries.items = { juce::GridItem(bandLabel), juce::GridItem(tRotary), juce::GridItem(aRotary), juce::GridItem(rRotary) };
         rotaries.performLayout(bounds);
         
         // Toggle buttons

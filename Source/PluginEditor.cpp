@@ -37,7 +37,17 @@ MBCompTutorialAudioProcessorEditor::~MBCompTutorialAudioProcessorEditor()
 //==============================================================================
 void MBCompTutorialAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::black);
+    auto bounds = getLocalBounds();
+    
+    auto grey = juce::Colour(48u, 54u, 61u);
+    auto navy = juce::Colour(13u, 17u, 23u);
+    
+    g.setColour(grey); // grey for border
+    g.fillAll();
+    
+    bounds.reduce(3, 2);
+    g.setColour(navy); // navy for fill
+    g.fillRoundedRectangle(bounds.toFloat(), 3);
 }
 
 void MBCompTutorialAudioProcessorEditor::resized()
@@ -57,22 +67,22 @@ void MBCompTutorialAudioProcessorEditor::resized()
     xOverIO.templateRows = { Track(Fr (1)), Track(Fr (1)), Track(Fr (1)), Track(Fr (1)) };
     xOverIO.templateColumns = { Track(Fr (1)) };
     
-    auto lmX = juce::GridItem(crossoverLowMid);
-    auto mhX = juce::GridItem(crossoverMidHigh);
-    auto inG = juce::GridItem(gainInput);
-    auto outG = juce::GridItem(gainOutput);
+    auto lmXOver = juce::GridItem(crossoverLowMid);
+    auto mhXOver = juce::GridItem(crossoverMidHigh);
+    auto inGain = juce::GridItem(gainInput);
+    auto outGain = juce::GridItem(gainOutput);
     
-    int mrg = 20;
-    lmX.margin = mrg;
-    mhX.margin = mrg;
-    inG.margin = mrg;
-    outG.margin = mrg;
+    auto mrg = juce::GridItem::Margin(30.f, 0.f, 10.f, 0.f);
+    lmXOver.margin = mrg;
+    mhXOver.margin = mrg;
+    inGain.margin = mrg;
+    outGain.margin = mrg;
     
     xOverIO.items = {
-        juce::GridItem(lmX),
-        juce::GridItem(mhX),
-        juce::GridItem(inG),
-        juce::GridItem(outG)
+        juce::GridItem(lmXOver),
+        juce::GridItem(mhXOver),
+        juce::GridItem(inGain),
+        juce::GridItem(outGain)
     };
     
     xOverIO.performLayout(rightStrip);
